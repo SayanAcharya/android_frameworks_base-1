@@ -72,6 +72,7 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
     protected String mClockFormatString;
     protected SimpleDateFormat mClockFormat;
     private SimpleDateFormat mContentDescriptionFormat;
+
     protected Locale mLocale;
     private boolean mScreenOn = true;
 
@@ -84,6 +85,9 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
     public static final int CLOCK_DATE_DISPLAY_GONE = 0;
     public static final int CLOCK_DATE_DISPLAY_SMALL = 1;
     public static final int CLOCK_DATE_DISPLAY_NORMAL = 2;
+
+    private Locale mLocale;
+    private boolean mScreenOn = true;
 
     public static final int CLOCK_DATE_STYLE_REGULAR = 0;
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
