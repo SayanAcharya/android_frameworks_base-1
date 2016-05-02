@@ -43,4 +43,6 @@ interface IDeviceIdleController {
     String[] getSystemPowerWhitelistOriginal();
     void addSystemPowerSaveWhitelistApp(String name);
     void removeSystemPowerSaveWhitelistApp(String name);
+    int getIdleStateDetailed();
+    int getLightIdleStateDetailed();
 }
