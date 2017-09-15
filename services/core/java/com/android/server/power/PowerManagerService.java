@@ -530,6 +530,9 @@ public final class PowerManagerService extends SystemService
     // True if we are currently in device idle mode.
     private boolean mDeviceIdleMode;
 
+    // overrule and disable brightness for buttons
+    private boolean mHasHwKeysEnabled = false;
+
     // True if we are currently in light device idle mode.
     private boolean mLightDeviceIdleMode;
 
@@ -816,6 +819,8 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.Global.getUriFor(
                 Settings.Global.DEVICE_DEMO_MODE),
                 false, mSettingsObserver, UserHandle.USER_SYSTEM);
+                Settings.System.ENABLE_HW_KEYS),
+                false, mSettingsObserver, UserHandle.USER_ALL);
         IVrManager vrManager = (IVrManager) getBinderService(Context.VR_SERVICE);
         if (vrManager != null) {
             try {
@@ -965,6 +970,10 @@ public final class PowerManagerService extends SystemService
             mAutoLowPowerModeConfigured = autoLowPowerModeConfigured;
             updateLowPowerModeLocked();
         }
+
+        mHasHwKeysEnabled = Settings.System.getIntForUser(resolver,
+                Settings.System.ENABLE_HW_KEYS, 1,
+                UserHandle.USER_CURRENT) != 0;
 
         mDirty |= DIRTY_SETTINGS;
     }
@@ -1953,11 +1962,6 @@ public final class PowerManagerService extends SystemService
                             + screenOffTimeout - screenDimDuration;
                     if (now < nextTimeout) {
                         mUserActivitySummary = USER_ACTIVITY_SCREEN_BRIGHT;
-                    } else {
-                        nextTimeout = mLastUserActivityTime + screenOffTimeout;
-                        if (now < nextTimeout) {
-                            mUserActivitySummary = USER_ACTIVITY_SCREEN_DIM;
-                        }
                     }
                 }
                 if (mUserActivitySummary == 0
