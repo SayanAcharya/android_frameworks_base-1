@@ -663,6 +663,8 @@ public class CommandQueue extends IStatusBar.Stub {
                 case MSG_SET_TOP_APP_HIDES_STATUS_BAR:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).setTopAppHidesStatusBar(msg.arg1 != 0);
+                    }
+                    break;  
                 case MSG_TOGGLE_CAMERA_FLASH:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).toggleCameraFlash();
