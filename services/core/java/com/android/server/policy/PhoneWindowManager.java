@@ -1871,6 +1871,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         im.injectInputEvent(upEvent, InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
     }
 
+    private void launchAllAppsAction() {
+        Intent intent = new Intent(Intent.ACTION_ALL_APPS);
+        if (mHasFeatureLeanback) {
+            final PackageManager pm = mContext.getPackageManager();
+            Intent intentLauncher = new Intent(Intent.ACTION_MAIN);
+            intentLauncher.addCategory(Intent.CATEGORY_HOME);
+            ResolveInfo resolveInfo = pm.resolveActivityAsUser(intentLauncher,
+                    PackageManager.MATCH_SYSTEM_ONLY,
+                    mCurrentUserId);
+            if (resolveInfo != null) {
+                intent.setPackage(resolveInfo.activityInfo.packageName);
+            }
+        }
+        startActivityAsUser(intent, UserHandle.CURRENT);
+    }
+
     private void launchCameraAction() {
         sendCloseSystemWindows();
         Intent intent = new Intent(Intent.ACTION_CAMERA_BUTTON, null);
