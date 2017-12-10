@@ -852,6 +852,9 @@ public final class PowerManagerService extends SystemService
                 Settings.Global.DEVICE_DEMO_MODE),
                 false, mSettingsObserver, UserHandle.USER_SYSTEM);
         resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.AMBIENT_DOZE_AUTO_BRIGHTNESS),
+                false, mSettingsObserver, UserHandle.USER_ALL);
+        resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.BUTTON_BRIGHTNESS),
                 false, mSettingsObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1050,6 +1053,13 @@ public final class PowerManagerService extends SystemService
                 UserHandle.USER_CURRENT);
 
         mDirty |= DIRTY_SETTINGS;
+
+        final boolean defaultIsAutoDozeBrightness = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_allowAutoBrightnessWhileDozing);
+        boolean isAutoDozeBrightness = Settings.System.getIntForUser(resolver,
+                Settings.System.AMBIENT_DOZE_AUTO_BRIGHTNESS, defaultIsAutoDozeBrightness ? 1 : 0,
+                UserHandle.USER_CURRENT) == 1;
+        mDisplayManagerInternal.enableAutoDozeBrightness(isAutoDozeBrightness);
     }
 
     private int getCurrentBrightnessSettingLocked() {
