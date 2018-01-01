@@ -2237,11 +2237,6 @@ public class PhoneNumberUtils
         return new String(out);
     }
 
-    /** @hide */
-    public static void resetCountryDetectorInfo() {
-       //sCountryDetector = null;
-    }
-
     /**
      * The phone keypad letter mapping (see ITU E.161 or ISO/IEC 9995-8.)
      * TODO: This should come from a resource.

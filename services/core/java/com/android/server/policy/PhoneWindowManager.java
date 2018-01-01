@@ -806,13 +806,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private final MutableBoolean mTmpBoolean = new MutableBoolean(false);
 
-    private boolean mVolumeMusicControlActive;
-    private boolean mVolumeMusicControl;
-    private boolean mVolumeWakeActive;
-    private HardkeyActionHandler mKeyHandler;
-
-    private int mTorchActionMode;
-
     private static final int MSG_ENABLE_POINTER_LOCATION = 1;
     private static final int MSG_DISABLE_POINTER_LOCATION = 2;
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
@@ -932,30 +925,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     break;
                 case MSG_HANDLE_ALL_APPS:
                     launchAllAppsAction();
-                    break;
-                case MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK: {
-                    KeyEvent event = (KeyEvent) msg.obj;
-                    dispatchMediaKeyWithWakeLockToAudioService(event);
-                    dispatchMediaKeyWithWakeLockToAudioService(
-                            KeyEvent.changeAction(event, KeyEvent.ACTION_UP));
-                    mVolumeMusicControlActive = true;
-                    break;
-                }
-                case MSG_TOGGLE_TORCH:
-                    performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-                    NitrogenUtils.toggleCameraFlash();
-                    break;
-                case HardkeyActionHandler.MSG_FIRE_HOME:
-                    launchHomeFromHotKey();
-                    break;
-//                case HardkeyActionHandler.MSG_UPDATE_MENU_KEY:
-//                    synchronized (mLock) {
-//                        mHasPermanentMenuKey = msg.arg1 == 1;
-//                    }
-//                    break;
-                case HardkeyActionHandler.MSG_DO_HAPTIC_FB:
-                    performHapticFeedbackLw(null,
-                            HapticFeedbackConstants.LONG_PRESS, false);
                     break;
             }
         }
@@ -1943,13 +1912,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         try {
             mOrientationListener.setCurrentRotation(windowManager.getDefaultDisplayRotation());
         } catch (RemoteException ex) { }
-
-        // only for hwkey devices
-        if (!mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_showNavigationBar)) {
-            mKeyHandler = new HardkeyActionHandler(mContext, mHandler);
-        }
-
         mSettingsObserver = new SettingsObserver(mHandler);
         mSettingsObserver.observe();
         mShortcutManager = new ShortcutManager(context);
@@ -3371,28 +3333,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final int flags = event.getFlags();
         final boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
         final boolean canceled = event.isCanceled();
-        final boolean longPress = (flags & KeyEvent.FLAG_LONG_PRESS) != 0;
-        final boolean virtualKey = event.getDeviceId() == KeyCharacterMap.VIRTUAL_KEYBOARD;
 
         if (DEBUG_INPUT) {
             Log.d(TAG, "interceptKeyTi keyCode=" + keyCode + " down=" + down + " repeatCount="
                     + repeatCount + " keyguardOn=" + keyguardOn + " mHomePressed=" + mHomePressed
                     + " canceled=" + canceled);
-        }
-
-        // we only handle events from hardware key devices that originate from
-        // real button
-        // pushes. We ignore virtual key events as well since it didn't come
-        // from a hard key or
-        // it's the key handler synthesizing a back or menu key event for
-        // dispatch
-        // if keyguard is showing and secure, don't intercept and let aosp keycode
-        // implementation handle event
-        if (mKeyHandler != null && !keyguardOn && !virtualKey) {
-            boolean handled = mKeyHandler.handleKeyEvent(win, keyCode, repeatCount, down, canceled,
-                    longPress, keyguardOn);
-            if (handled)
-                return -1;
         }
 
         // If we think we might have a volume down & power key chord on the way
