@@ -4648,7 +4648,7 @@ public final class PowerManagerService extends SystemService
          *
          * @param brightness The overridden brightness.
          */
-        @Override // Binder call
+/**        @Override // Binder call
         public void setTemporaryButtonBrightnessSettingOverride(int brightness) {
             mContext.enforceCallingOrSelfPermission(
                     android.Manifest.permission.DEVICE_POWER, null);
@@ -4659,7 +4659,7 @@ public final class PowerManagerService extends SystemService
             } finally {
                 Binder.restoreCallingIdentity(ident);
             }
-        }
+        }*/
 
         @Override
         /* updates the blocked uids, so if a wake lock is acquired for it
