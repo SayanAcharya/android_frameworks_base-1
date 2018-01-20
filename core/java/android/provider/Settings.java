@@ -7947,7 +7947,7 @@ public final class Settings {
          */
         public static final String DEVICE_THEME = "device_theme";
 
-         * Force authorize Substratum (or equivalent) frontend calling packages by ThemeInterfacer
+        /** Force authorize Substratum (or equivalent) frontend calling packages by ThemeInterfacer
          * The value is boolean (1 or 0).
          * @hide
          */
