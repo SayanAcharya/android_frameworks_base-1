@@ -69,5 +69,4 @@
          Used to decide if we show pulse settings -->
     <bool name="config_ledCanPulse">true</bool>
 
-    <integer name="config_deviceHardwareKeys">64</integer>
 </resources>
